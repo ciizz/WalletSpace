@@ -39,8 +39,8 @@ export default function App() {
         <PaperProvider theme={theme}>
           <Pages />
         </PaperProvider>
-        <Web3Modal />
       </SafeAreaView>
+      <Web3Modal />
     </WagmiConfig>
   )
 }
