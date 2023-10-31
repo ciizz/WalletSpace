@@ -1,11 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { Title } from 'react-native-paper';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text>Start setting up WalletConnect</Text>
-      <StatusBar style="auto" />
+      <Title>Welcome to WalletSpace.</Title>
     </View>
   );
 }
