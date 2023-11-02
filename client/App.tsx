@@ -1,6 +1,8 @@
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import { WagmiConfig } from 'wagmi';
 import { mainnet, polygon, arbitrum } from 'wagmi/chains';
+import * as Clipboard from 'expo-clipboard';
+
 import Pages from './src/Pages';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,7 +31,12 @@ const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 createWeb3Modal({ 
   projectId,
   chains,
-  wagmiConfig
+  wagmiConfig,
+  clipboardClient: {
+    setString: async (value: string) => {
+      await Clipboard.setStringAsync(value);
+    }
+  }
 })
 
 export default function App() {

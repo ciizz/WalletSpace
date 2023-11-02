@@ -16,6 +16,7 @@
     "@web3modal/core-react-native": "^1.0.0-alpha.13",
     "@web3modal/wagmi-react-native": "^1.0.0-alpha.13",
     "expo": "~49.0.15",
+    "expo-clipboard": "~4.3.1",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
