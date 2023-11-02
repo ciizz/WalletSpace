@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import { StyleSheet, View, Text, TextInput, Button } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { Title } from "react-native-paper";
 
 export default function SendScreen() {
     const [targetAddress, setTargetAddress] = useState("");
@@ -12,8 +13,8 @@ export default function SendScreen() {
     };
 
     return (
-        <View>
-            <Text>Send Crypto</Text>
+        <View style={styles.container}>
+            <Title>Send Crypto</Title>
             <View>
                 <Text>Target Address:</Text>
                 <TextInput
@@ -38,10 +39,19 @@ export default function SendScreen() {
                 >
                     <Picker.Item label="Select a cryptocurrency" value="" />
                     <Picker.Item label="Ethereum" value="ETH" />
-                    <Picker.Item label="MATIC" value="MATIC" />
+                    <Picker.Item label="Polygon" value="MATIC" />
+                    <Picker.Item label="Arbitrum" value="ARB" />
                 </Picker>
             </View>
             <Button title="Send" onPress={handleSendCrypto} />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+    }
+});
