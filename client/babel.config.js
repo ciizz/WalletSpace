@@ -7,5 +7,6 @@ module.exports = function(api) {
         plugins: ['react-native-paper/babel'],
       },
     },
+    plugins: [["@babel/plugin-transform-private-methods", { "loose": true }]]
   };
 };

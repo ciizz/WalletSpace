@@ -1,6 +1,6 @@
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import { WagmiConfig } from 'wagmi';
-import { mainnet, polygon, arbitrum } from 'wagmi/chains';
+import { mainnet, goerli, polygon, arbitrum } from 'wagmi/chains';
 import * as Clipboard from 'expo-clipboard';
 
 import Pages from './src/Pages';
@@ -23,7 +23,7 @@ const metadata = {
   }
 }
 
-const chains = [mainnet, polygon, arbitrum]
+const chains = [goerli]
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 

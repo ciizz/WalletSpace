@@ -1,57 +1,89 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { Title } from "react-native-paper";
+import React, { useState } from 'react';
+import { StyleSheet, View, TextInput, Button, Text, Linking } from 'react-native';
+import { W3mButton } from '@web3modal/wagmi-react-native'
+import { useDebounce } from 'use-debounce';
+import {
+    useAccount, 
+    usePrepareSendTransaction,
+    useSendTransaction,
+    useWaitForTransaction,
+} from 'wagmi';
+import "@ethersproject/shims"
+import { ethers } from 'ethers';
 
-export default function SendScreen() {
-    const [targetAddress, setTargetAddress] = useState("");
-    const [amount, setAmount] = useState("");
-    const [cryptoType, setCryptoType] = useState("");
 
-    const handleSendCrypto = async () => {
-        alert(`Successfully sent ${amount} ${cryptoType} to ${targetAddress}`);
-    };
+export default function SendTransaction() {
+
+    const { isConnected } = useAccount()
+
+    const [to, setTo] = useState('');
+    const [debouncedTo] = useDebounce(to, 500);
+
+    const [amount, setAmount] = useState('');
+    const [debouncedAmount] = useDebounce(amount, 500);
+
+    const { config } = usePrepareSendTransaction({
+        to: debouncedTo,
+        value: debouncedAmount ? ethers.parseEther(amount) : undefined,
+    });
+    const { data, sendTransaction } = useSendTransaction(config);
+
+    const { isLoading, isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
+    });
+
+    if (!isConnected) {
+        return (
+            <View style={styles.container}>
+                <W3mButton />
+            </View>
+        );
+    }
 
     return (
-        <View style={styles.container}>
-            <Title>Send Crypto</Title>
+        <View>
+        <TextInput
+            placeholder="Recipient"
+            onChangeText={(text) => setTo(text)}
+            value={to}
+        />
+        <TextInput
+            placeholder="Amount (ether)"
+            onChangeText={(text) => setAmount(text)}
+            value={amount}
+        />
+        <Button
+            title={isLoading ? 'Sending...' : 'Send'}
+            onPress={() => {
+            sendTransaction?.();
+            }}
+            disabled={isLoading || !sendTransaction || !to || !amount}
+        />
+        {isSuccess && (
             <View>
-                <Text>Target Address:</Text>
-                <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    value={targetAddress}
-                    onChangeText={(text) => setTargetAddress(text)}
+            <Text>
+                Successfully sent {amount} ether to {to}
+            </Text>
+            <View>
+                <Button
+                title="Etherscan"
+                onPress={() => {
+                    Linking.openURL(`https://etherscan.io/tx/${data?.hash}`);
+                }}
                 />
             </View>
-            <View>
-                <Text>Amount:</Text>
-                <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    value={amount}
-                    onChangeText={(text) => setAmount(text)}
-                />
             </View>
-            <View>
-                <Text>Crypto Type:</Text>
-                <Picker
-                    selectedValue={cryptoType}
-                    onValueChange={(value) => setCryptoType(value)}
-                >
-                    <Picker.Item label="Select a cryptocurrency" value="" />
-                    <Picker.Item label="Ethereum" value="ETH" />
-                    <Picker.Item label="Polygon" value="MATIC" />
-                    <Picker.Item label="Arbitrum" value="ARB" />
-                </Picker>
-            </View>
-            <Button title="Send" onPress={handleSendCrypto} />
+        )}
         </View>
     );
-};
+}
+
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-    }
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
 });
