@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Text, Linking } from 'react-native';
+import { StyleSheet, View, Linking } from 'react-native';
+import { Button, Card, Text, TextInput} from 'react-native-paper';
 import { W3mButton } from '@web3modal/wagmi-react-native'
 import { useDebounce } from 'use-debounce';
 import {
@@ -41,39 +42,44 @@ export default function SendTransaction() {
     }
 
     return (
-        <View>
-        <TextInput
-            placeholder="Recipient"
-            onChangeText={(text) => setTo(text)}
-            value={to}
-        />
-        <TextInput
-            placeholder="Amount (ether)"
-            onChangeText={(text) => setAmount(text)}
-            value={amount}
-        />
-        <Button
-            title={isLoading ? 'Sending...' : 'Send'}
-            onPress={() => {
-            sendTransaction?.();
-            }}
-            disabled={isLoading || !sendTransaction || !to || !amount}
-        />
-        {isSuccess && (
-            <View>
-            <Text>
-                Successfully sent {amount} ether to {to}
-            </Text>
-            <View>
-                <Button
-                title="Etherscan"
-                onPress={() => {
-                    Linking.openURL(`https://etherscan.io/tx/${data?.hash}`);
-                }}
+        <View style={styles.container}>
+            <Card style={styles.card}>
+                <TextInput
+                    placeholder="Recipient"
+                    onChangeText={(text) => setTo(text)}
+                    value={to}
                 />
-            </View>
-            </View>
-        )}
+                <TextInput
+                    placeholder="Amount (ETH)"
+                    onChangeText={(text) => setAmount(text)}
+                    value={amount}
+                />
+                <Button
+                    onPress={() => {
+                        sendTransaction?.();
+                    }}
+                    disabled={isLoading || !sendTransaction || !to || !amount}
+                >
+                    Send
+                </Button>
+
+            </Card>
+            {isSuccess && (
+                <View>
+                    <Text>
+                        Successfully sent {amount} ETH to {to}
+                    </Text>
+                    <View>
+                        <Button
+                            onPress={() => {
+                                Linking.openURL(`https://etherscan.io/tx/${data?.hash}`);
+                            }}
+                        >
+                            View on Etherscan
+                        </Button>
+                    </View>
+                </View>
+            )}
         </View>
     );
 }
@@ -86,4 +92,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    card: {
+        width: '90%'
+    }
 });

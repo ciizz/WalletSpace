@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { W3mButton } from '@web3modal/wagmi-react-native'
 
 export default function ProfileScreen() {
