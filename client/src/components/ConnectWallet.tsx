@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Button, Image } from 'react-native';
 import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 
-export default function ProfileScreen2() {
+export default function ConnectWallet() {
   const { address, connector, isConnected } = useAccount();
   const { data: ensAvatar } = useEnsAvatar({ name: address });
   const { data: ensName } = useEnsName({ address });
