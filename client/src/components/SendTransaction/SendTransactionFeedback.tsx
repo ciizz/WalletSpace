@@ -28,9 +28,6 @@ export default function SendTransactionFeedback(props : Props) {
         {props.success ? 
             <View>
                 <Text>
-                    Transaction failed
-                </Text>
-                <Text>
                     Successfully sent {props.amount} ETH to {props.recipient}
                 </Text>
                 <View>

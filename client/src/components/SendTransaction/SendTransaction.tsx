@@ -17,18 +17,26 @@ import SendTransactionFeedback from './SendTransactionFeedback';
 export default function SendTransaction() {
     const { isConnected } = useAccount();
     const [to, setTo] = useState('');
-    const [debouncedTo] = useDebounce(to, 500);
+    const [debouncedTo] = useDebounce(to, 5000); // waits for 5000 ms before updating debouncedTo
     const [amount, setAmount] = useState('');
-    const [debouncedAmount] = useDebounce(amount, 500);
+    const [debouncedAmount] = useDebounce(amount, 5000); // waits for 5000 ms before updating debouncedAmount
 
     const { config } = usePrepareSendTransaction({
-        to: debouncedTo,
+        to: ethers.isAddress(debouncedTo) ? debouncedTo : undefined,
         value: debouncedAmount ? ethers.parseEther(amount) : undefined
     });
     const { data, sendTransaction } = useSendTransaction(config); // Add error variable
 
+    const [isSettled, setIsSettled] = useState(false);
+
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
+        onSettled(data, error) {
+            console.log('Settled', { data, error });
+            setIsSettled(true);
+            // setTo('');
+            // setAmount('');
+        }
     });
 
     if (!isConnected) {
@@ -63,9 +71,9 @@ export default function SendTransaction() {
                     {isLoading ? 'Sending...' : 'Send'}
                 </Button>
             </Card>
-            {isSuccess && (
-                <SendTransactionFeedback success={true} recipient={to} amount={amount} hash={data?.hash} />
-            )}
+            { isSettled &&
+                <SendTransactionFeedback success={isSuccess} recipient={to} amount={amount} hash={data?.hash} />
+            }
         </View>
     );
 }
